@@ -1,4 +1,4 @@
-/*
+ /*
  * (c) David Gerstl, 2021. all rights reserved. For use
  * in my CSC programming classes
  */
@@ -203,7 +203,26 @@ public class BinaryTree<T extends Comparable<T>> {
      * (so it has .accept(T t)
      */
     public void bfs(Consumer actionObject) {
-        System.err.println("Not yet implemented");
+        
+        Node<T> current = new Node<T>();
+        current = root;
+        Queue<Node<T>> nq = new LinkedList<Node<T>>();
+        nq.add(root);
+        
+        while(!nq.isEmpty()){
+            current = nq.poll();
+            
+            if(current.leftChild != null){
+                nq.add(current.leftChild);
+            }
+            if(current.rightChild != null){
+                nq.add(current.rightChild);
+            }
+            System.out.println(current.data);
+        }
+        
+        
+        
     } // bfs
 
     // in order to make this print correctly, we can override toString() and 

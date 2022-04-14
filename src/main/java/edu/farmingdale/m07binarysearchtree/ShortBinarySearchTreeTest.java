@@ -16,6 +16,7 @@ public class ShortBinarySearchTreeTest implements RunTest {
         if (!theTree.insert("root")) {
             return "Failed at A0001";
         }
+        System.out.println(theTree);
         if (!theTree.insert("lChildRoot")) {
             return "Failed at A0002";
         }
@@ -104,6 +105,7 @@ public class ShortBinarySearchTreeTest implements RunTest {
                 "root, lChildRoot, rootRightChild, lChildRootRightChild, somewhere3rdLevelRightmost, ";
         StringBuilder bfsSB = new StringBuilder();
         theTree.bfs((t) -> {bfsSB.append(t+", ");});
+        
         if (!bfsSB.toString().equals(expectedBFSString)){
             System.err.print("Breadth First Search should be:");
             System.err.println("\t["+expectedBFSString+"]");
