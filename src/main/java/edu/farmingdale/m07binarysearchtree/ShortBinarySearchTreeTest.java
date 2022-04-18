@@ -116,6 +116,7 @@ public class ShortBinarySearchTreeTest implements RunTest {
 
         // Now a simple test. Make a new tree with different structure but the same content,
         // then compare
+        
         BinarySearchTree<String> theOtherTree = new BinarySearchTree<>();
         var theIter = theTree.iterator();
         while (theIter.hasNext()) {
@@ -126,6 +127,7 @@ public class ShortBinarySearchTreeTest implements RunTest {
         if (!theTree.equals(theOtherTree)) {
             return "Failed at A0011";
         }
+        
         // now back to the original tree
         // now remove the root. This should result in a different tree
         if (!theTree.remove("root")) {

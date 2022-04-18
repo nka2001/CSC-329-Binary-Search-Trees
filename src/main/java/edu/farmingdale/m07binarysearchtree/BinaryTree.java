@@ -218,11 +218,12 @@ public class BinaryTree<T extends Comparable<T>> {
             if(current.rightChild != null){
                 nq.add(current.rightChild);
             }
-            System.out.println(current.data);
+           
+            actionObject.accept(current.data);
+                    
+        
+        
         }
-        
-        
-        
     } // bfs
 
     // in order to make this print correctly, we can override toString() and 

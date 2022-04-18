@@ -82,13 +82,13 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
     public Iterator<T> iterator() {
         
         Stack<Node<T>> s = new Stack<Node<T>>();
-        
-        Node<T> curr = root;
-        
+ 
         while(root != null){
             s.push(root);
             root = root.leftChild;
-        } 
+        }
+        
+        
         
         Iterator<T> iterRv = new Iterator<T>() {
 
@@ -104,19 +104,18 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
             public T next() {
                 
                 Node<T> n = s.pop();
+                Node<T> node = n.rightChild;
                 
-                if(n.rightChild != null){
-                    n = n.rightChild;
-                    while(n != null){
-                        s.push(n);
-                        n = n.leftChild;
-                    }
+                while(node != null){
+                    s.push(node);
+                    node = node.leftChild;
                 }
                 
+               
+                    
                 
                 
-                
-                
+               
                 return n.data;
             } // next()
 
@@ -151,6 +150,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
         if (this == other) {
             return true;
         }
+        
+        
+        
         // Step 1: Threshold question - same number of nodes
         // if these are computed, maybe remove this
         // as it's no more efficient than a full traversal
