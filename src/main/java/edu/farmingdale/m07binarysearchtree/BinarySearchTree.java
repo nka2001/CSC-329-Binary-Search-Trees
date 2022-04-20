@@ -80,43 +80,31 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
      * @return an iterator that produces nodes in order.
      */
     public Iterator<T> iterator() {
-        
-        Stack<Node<T>> s = new Stack<Node<T>>();
- 
-        while(root != null){
-            s.push(root);
-            root = root.leftChild;
-        }
-        
-        
-        
+
         Iterator<T> iterRv = new Iterator<T>() {
 
-        
-            
-            
+            private Stack<Node<T>> s = new Stack<>();
+            private Node<T> curr = root;
+
             @Override
             public boolean hasNext() {
-                return !s.isEmpty();
+                System.out.println(curr);
+                return (!s.isEmpty() || curr != null);
+
             } // hasNext()
 
             @Override
             public T next() {
-                
-                Node<T> n = s.pop();
-                Node<T> node = n.rightChild;
-                
-                while(node != null){
-                    s.push(node);
-                    node = node.leftChild;
+                while (curr != null) {
+                    s.push(curr);
+                    curr = curr.leftChild;
                 }
-                
-               
-                    
-                
-                
-               
-                return n.data;
+                curr = s.pop();
+                Node<T> node = curr;
+                curr = curr.rightChild;
+
+                return node.data;
+
             } // next()
 
             // iterator remove not supported
@@ -141,6 +129,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
      * @return true iff the two trees contain exactly the same items (the
      * structure is not taken into account)
      */
+    private int counter;
+
     public boolean equals(BinarySearchTree other) {
         if (verbose) {
             System.err.println("Comparing:\tTree1:\n" + toString());
@@ -150,16 +140,29 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
         if (this == other) {
             return true;
         }
-        
-        
-        
+
+        if (numberOfNodes(root) != other.numberOfNodes(root)) {//if the number of nodes differ, the trees cant be the same 
+            return false;
+        }
+
+        Iterator<T> myIter = iterator();
+        Iterator<T> otherIter = other.iterator();
+
+        while (myIter.hasNext() && otherIter.hasNext()) {
+            T myElement = myIter.next();
+            T otherElement = otherIter.next();
+
+            if (!other.search(myElement) && !search(otherElement)) {
+                return false;
+            }
+        }
         // Step 1: Threshold question - same number of nodes
         // if these are computed, maybe remove this
         // as it's no more efficient than a full traversal
         // Step 2: now create iterators through each tree and compare. If we find a 
         // difference, the two trees are not the same 
         // Step 3: Finally, if the two trees survive that guantlet, they are the same.
-        return false;
+        return true;
     }
 
     // see note before equals()
@@ -189,6 +192,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
         if (root == null) {
             root = newNode;
             super.numberOfNodes();
+            counter++;
             return true;
         }
 
@@ -207,8 +211,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
         if (traverseNode == null) {
 
             if (trail.data.compareTo(newNode.data) < 0) {
+                counter++;
                 trail.rightChild = newNode;
             } else {
+                counter++;
                 trail.leftChild = newNode;
             }
 
@@ -221,7 +227,95 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
 
     public boolean remove(T removeMe) {
 
-        return false;
+        Node<T> traverseNode = root;
+        Node<T> trail = traverseNode;
+
+        if (!search(removeMe)) {//see if the removal node is even there 
+            return false;
+        } else {
+
+            while (traverseNode.data != removeMe) {
+
+                if (traverseNode.data.compareTo(removeMe) < 0) {
+                    trail = traverseNode;
+                    traverseNode = traverseNode.rightChild;
+                } else {
+                    trail = traverseNode;
+                    traverseNode = traverseNode.leftChild;
+                }
+
+            }
+
+            if (traverseNode.data.equals(removeMe) && traverseNode.leftChild == null && traverseNode.rightChild == null) {//no childern
+
+                traverseNode.data = null;
+
+                return true;
+            }// no child if
+            if (traverseNode.data.equals(removeMe) && trail.leftChild != null && trail.rightChild != null) {//two childern
+
+                Node<T> successor = findSuccessor(traverseNode);//step 1 find the succesor and save it
+                System.out.println(successor.data + "==");
+                
+
+               
+                
+                
+
+                return true;
+
+            }
+            else {//one child
+               
+
+                if (trail.data.compareTo(traverseNode.data) < 0) {
+                    if (traverseNode.leftChild == null) {
+
+                        trail.leftChild = traverseNode.rightChild;
+                        counter--;
+                    } else {
+                        trail.leftChild = traverseNode.leftChild;
+                        counter--;
+                    }
+                } else {
+                    if (traverseNode.leftChild == null) {
+
+                        trail.leftChild = traverseNode.rightChild;
+                        counter--;
+                    } else {
+                        trail.leftChild = traverseNode.leftChild;
+                        counter--;
+                    }
+                }
+
+                return true;
+
+             
+        }
+        
+       
+
+        }
+    }
+
+
+
+private Node<T> findSuccessor(Node<T> node) {
+        Node<T> temp = node;
+
+        temp = temp.rightChild;
+
+        Node<T> trail = temp;
+       
+
+        while (trail != null) {
+            temp = trail;
+            trail = trail.leftChild;
+        }
+    System.out.println("temp: " + temp.data);
+        
+
+        return temp;
     }
 
     public boolean search(T findMe) {
