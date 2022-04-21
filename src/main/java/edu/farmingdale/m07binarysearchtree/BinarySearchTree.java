@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.*; // for cloning
 import com.google.gson.reflect.TypeToken; // for cloning
 import java.lang.reflect.Type; // for cloning
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 /**
@@ -88,13 +89,17 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
 
             @Override
             public boolean hasNext() {
-                System.out.println(curr);
+                
                 return (!s.isEmpty() || curr != null);
 
             } // hasNext()
 
             @Override
             public T next() {
+
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 while (curr != null) {
                     s.push(curr);
                     curr = curr.leftChild;
@@ -186,43 +191,36 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
         Node<T> traverseNode = root;
         Node<T> trail = traverseNode;
 
-        if (search(addMe)) {
-            return false;//this means that it was found
-        }
+     
         if (root == null) {
             root = newNode;
-            super.numberOfNodes();
-            counter++;
+        
             return true;
         }
 
         while (traverseNode != null) {
-
+            trail = traverseNode;
+            if (traverseNode.data.compareTo(addMe) == 0) {
+                return false;
+            }
             if (traverseNode.data.compareTo(addMe) < 0) {
-                trail = traverseNode;
                 traverseNode = traverseNode.rightChild;
             } else {
-                trail = traverseNode;
                 traverseNode = traverseNode.leftChild;
             }
 
+        } // while
+
+        if (trail.data.compareTo(newNode.data) < 0) {
+
+            trail.rightChild = newNode;
+        } else {
+
+            trail.leftChild = newNode;
         }
 
-        if (traverseNode == null) {
-
-            if (trail.data.compareTo(newNode.data) < 0) {
-                counter++;
-                trail.rightChild = newNode;
-            } else {
-                counter++;
-                trail.leftChild = newNode;
-            }
-
-            super.numberOfNodes();
-            return true;
-        }
-
-        return false;
+   
+        return true;
     }
 
     public boolean remove(T removeMe) {
@@ -247,73 +245,71 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> imp
             }
 
             if (traverseNode.data.equals(removeMe) && traverseNode.leftChild == null && traverseNode.rightChild == null) {//no childern
-
+                
+                System.out.println("removing: " + removeMe);
+                System.out.println("in no child");
+                if(trail.rightChild != null){
+                    trail.leftChild = null;
+                } else {
+                    trail.rightChild = null;
+                }
+                
+                
                 traverseNode.data = null;
 
                 return true;
             }// no child if
-            if (traverseNode.data.equals(removeMe) && trail.leftChild != null && trail.rightChild != null) {//two childern
 
-                Node<T> successor = findSuccessor(traverseNode);//step 1 find the succesor and save it
-                System.out.println(successor.data + "==");
-                
+            if (traverseNode.data.equals(removeMe) && traverseNode.leftChild != null && traverseNode.rightChild != null) {//two childern
 
+                System.out.println("removing: " + removeMe);
+                System.out.println("in two child");
                
-                
-                
 
+                Node<T> successor = findSuccessor(traverseNode);
+                T tempData = successor.data;
+
+                remove(tempData);
+                traverseNode.data = tempData;
+              
                 return true;
 
-            }
-            else {//one child
-               
-
-                if (trail.data.compareTo(traverseNode.data) < 0) {
-                    if (traverseNode.leftChild == null) {
-
-                        trail.leftChild = traverseNode.rightChild;
-                        counter--;
-                    } else {
-                        trail.leftChild = traverseNode.leftChild;
-                        counter--;
-                    }
+            } else {
+                // single child case
+                System.out.println("removing: " + removeMe);
+                System.out.println("in one child");
+                
+                Node<T> yemp;
+                if (traverseNode.leftChild == null) {
+                    yemp = traverseNode.rightChild;
                 } else {
-                    if (traverseNode.leftChild == null) {
-
-                        trail.leftChild = traverseNode.rightChild;
-                        counter--;
-                    } else {
-                        trail.leftChild = traverseNode.leftChild;
-                        counter--;
-                    }
+                    yemp = traverseNode.leftChild;
+                }
+                if (trail.leftChild == traverseNode) {
+                    trail.leftChild = yemp;
+                } else {
+                    trail.rightChild = yemp;
                 }
 
-                return true;
-
-             
-        }
-        
-       
+            }
 
         }
+        return true;
     }
 
+   
 
-
-private Node<T> findSuccessor(Node<T> node) {
+    private Node<T> findSuccessor(Node<T> node) {
         Node<T> temp = node;
 
         temp = temp.rightChild;
 
         Node<T> trail = temp;
-       
 
         while (trail != null) {
             temp = trail;
             trail = trail.leftChild;
         }
-    System.out.println("temp: " + temp.data);
-        
 
         return temp;
     }

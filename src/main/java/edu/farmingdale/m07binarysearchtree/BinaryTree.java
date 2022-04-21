@@ -202,27 +202,21 @@ public class BinaryTree<T extends Comparable<T>> {
      * @param actionObject An object of a class implementing Consumer
      * (so it has .accept(T t)
      */
-    public void bfs(Consumer actionObject) {
-        
-        Node<T> current = new Node<T>();
-        current = root;
-        Queue<Node<T>> nq = new LinkedList<Node<T>>();
+  public void bfs(Consumer actionObject) {
+        Queue <Node> nq = new LinkedList();
         nq.add(root);
-        
+
         while(!nq.isEmpty()){
-            current = nq.poll();
-            
-            if(current.leftChild != null){
-                nq.add(current.leftChild);
+            Node<T> cur = null;
+            cur = nq.remove();
+            actionObject.accept(cur.data);
+            if(cur.leftChild != null){
+                nq.add(cur.leftChild);
             }
-            if(current.rightChild != null){
-                nq.add(current.rightChild);
+            if(cur.rightChild != null){
+                nq.add(cur.rightChild);
             }
-           
-            actionObject.accept(current.data);
-                    
-        
-        
+
         }
     } // bfs
 

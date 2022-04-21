@@ -141,7 +141,7 @@ public class ShortBinarySearchTreeTest implements RunTest {
          *   lChildRoot
          */
         // now try to remove it again. It should fail
-
+        System.out.println("The tree: " + theTree);
         if (theTree.remove("root")) {
             return "Failed at A0013";
         }
